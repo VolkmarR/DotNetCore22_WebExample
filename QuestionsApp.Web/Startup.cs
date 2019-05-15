@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using QuestionsApp.Web.DB;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace QuestionsApp.Web
 {
@@ -18,6 +19,12 @@ namespace QuestionsApp.Web
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            // Configuration for the Swagger Generator
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("QuestionsApi", new Info { Title = "Questions API" });
+            });
+            
             // Configuration for the MVC Framework
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Latest);
 
@@ -32,6 +39,13 @@ namespace QuestionsApp.Web
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            // activate swagger
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/QuestionsApi/swagger.json", "Questions API V1");
+            });
 
             // Activate MVC for Web-Api
             app.UseMvc();

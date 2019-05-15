@@ -26,3 +26,10 @@
 ## Implement Queries and Commands
 
 * Add a constructor to controllers for dependency injection
+* Implement the controllers
+* Test the implementation with the unit tests
+
+## Activate Swagger
+
+* Add the Swashbuckle.AspNetCore NuGet package to the QuestionsApp.Web project
+* Configure and activate Swagger
