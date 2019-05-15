@@ -50,6 +50,10 @@ namespace QuestionsApp.Web
             // Activate MVC for Web-Api
             app.UseMvc();
 
+            // activate static files serving
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
+
             app.Run(async (context) =>
             {
                 await context.Response.WriteAsync("Error!");
