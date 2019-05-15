@@ -6,7 +6,9 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using QuestionsApp.Web.DB;
 
 namespace QuestionsApp.Web
 {
@@ -18,6 +20,9 @@ namespace QuestionsApp.Web
         {
             // Configuration for the MVC Framework
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Latest);
+
+            // Configuration for Entity Framework
+            services.AddDbContext<QuestionsContext>(options => options.UseInMemoryDatabase("Dummy"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -28,7 +33,7 @@ namespace QuestionsApp.Web
                 app.UseDeveloperExceptionPage();
             }
 
-            // activate mvc for web-api
+            // Activate MVC for Web-Api
             app.UseMvc();
 
             app.Run(async (context) =>

@@ -23,7 +23,7 @@
   * QuestionsController.cs in Api/Controllers/Commands
   * Question in Api/Models
 * Add the ApiController and Route Attributes to the QuestionsController classes
-* Add the following methods to the conrollers
+* Add the following methods to the controllers
   * Get to Queries/QuestionsController
   * Ask and Vote to Commands/QuestionsController
 * Add the follwing properties to Models/Question
