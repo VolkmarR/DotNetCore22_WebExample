@@ -5,7 +5,7 @@
 * Create new, empty asp.net core 2.2 webapplication 
   * project name: QuestionsApp.Web
   * solution name: QuestionsApp
-* Add new class library project (.Net Standard)
+* Add new XUnit Test project (.Net Core)
   * project name: QuestionsApp.Tests
 * Save all
 
@@ -26,3 +26,15 @@
 * Add the following methods to the conrollers
   * Get to Queries/QuestionsController
   * Ask and Vote to Commands/QuestionsController
+* Add the follwing properties to Models/Question
+  * int ID, string Content, int Votes
+
+## Add Unittests for Controllers
+
+* Create the refererence to the QuestionsApp.Web project in the QuestionsApp.Tests project
+* Add NuGet Packages used by QuestionsApp.Web project to QuestionsApp.Tests project
+* Add QuestionsTests class for tests
+* Implement tests 
+  * Empty
+  * AddQuestion
+  * AddVote
