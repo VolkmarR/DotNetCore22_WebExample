@@ -22,9 +22,8 @@ namespace QuestionsApp.Tests
 
         private QuestionsApp.Web.Api.Controllers.Commands.QuestionsController NewCommand(QuestionsContext context)
         {
-            return new Web.Api.Controllers.Commands.QuestionsController(context);
+            return new Web.Api.Controllers.Commands.QuestionsController(context, null);
         }
-
 
         [Fact]
         public void Empty()

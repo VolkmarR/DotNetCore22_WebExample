@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using QuestionsApp.Web.DB;
+using QuestionsApp.Web.Hubs;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace QuestionsApp.Web
@@ -30,6 +31,9 @@ namespace QuestionsApp.Web
 
             // Configuration for Entity Framework
             services.AddDbContext<QuestionsContext>(options => options.UseInMemoryDatabase("Dummy"));
+
+            // Configuration for SignalR
+            services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -53,6 +57,9 @@ namespace QuestionsApp.Web
             // activate static files serving
             app.UseDefaultFiles();
             app.UseStaticFiles();
+
+            // activate SignalR Hub
+            app.UseSignalR(routes => { routes.MapHub<QuestionsHub>("/hub"); } );
 
             app.Run(async (context) =>
             {
