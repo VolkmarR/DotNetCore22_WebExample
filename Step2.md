@@ -1,35 +1,161 @@
 # Step 2 - Web Api implementation
 
-## Add database model
+## Add Nuget packages for database access
 
 * Add the NuGet packages to both projects
   * Microsoft.EntityFrameworkCore.InMemory
   * Microsoft.EntityFrameworkCore.Sqlite
+
+## Implement the database model
+
+### Add folders and classes for the database model
+
 * Add new folder DB to the QuestionsApp.Web project
 * Add new classes for the database model
   * QuestionsContext
   * QuestionDB
   * VoteDB
-* Add properties to QuestionDB 
-  * ID (int, Key, DatabaseGenerated)
-  * Content (string)
-  * Votes (ICollection)
-* Add properties to QuestionDB 
-  * ID (int, Key, DatabaseGenerated)
-  * QuestionID (int)
-  * Question (QuestionDB)
-* Implement QuestionsContext
-  * DbSet for Questions and Votes
-  * Constructor with DbContextOptions parameter
-* Configure EntityFramework in startup to use InMemoryDatabase
+  
+### Add properties for the database model
+
+<details><summary>Add properties to QuestionDB</summary>
+ 
+~~~c#
+[Key]
+[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+public int ID { get; set; }
+public string Content { get; set; }
+public ICollection<VoteDB> Votes { get; set; }
+~~~
+</details>
+
+<details><summary>Add properties to VoteDB</summary>
+
+~~~c#
+[Key]
+[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+public int ID { get; set; }
+public int QuestionID { get; set; }
+public QuestionDB Question { get; set; }
+~~~
+</details>
+
+### Implement the QuestionsContext
+
+<details><summary>Add DbContext as base class and add constructor with DbContextOptions parameter for dependency</summary>
+
+~~~c#
+public class QuestionsContext : DbContext
+{
+    public QuestionsContext(DbContextOptions options) : base(options)
+    { }
+}
+~~~
+</details>
+
+<details><summary>Add DbSet for Questions and Votes to QuestionsContext</summary>
+
+~~~c#
+public DbSet<QuestionDB> Questions { get; set; }
+public DbSet<VoteDB> Votes { get; set; }
+~~~
+</details>
+
+### Configure EntityFramework in startup to use InMemoryDatabase
+
+<details><summary>ConfigureServices</summary>
+
+~~~c#
+// Configuration for Entity Framework
+services.AddDbContext<QuestionsContext>(options => options.UseInMemoryDatabase("Dummy"));
+~~~
+</details>
 
 ## Implement Queries and Commands
 
-* Add a constructor to controllers for dependency injection
-* Implement the controllers
-* Test the implementation with the unit tests
+### QuestionsController.cs in Api/Controllers/Queries
+
+<details><summary>Add a constructor to controllers for dependency injection</summary>
+
+~~~c#
+private readonly QuestionsContext _context;
+public QuestionsController(QuestionsContext context)
+{
+    _context = context;
+}
+~~~
+</details>
+
+<details><summary>Implement the Get method</summary>
+
+~~~c#
+return (from q in _context.Questions
+        select new Question { ID = q.ID, Content = q.Content, Votes = q.Votes.Count() }).ToList();
+~~~
+</details>
+
+### QuestionsController.cs in Api/Controllers/Commands
+
+<details><summary>Add a constructor to controllers for dependency injection</summary>
+
+~~~c#
+private readonly QuestionsContext _context;
+public QuestionsController(QuestionsContext context)
+{
+    _context = context;
+}
+~~~
+</details>
+
+<details><summary>Implement the Ask method</summary>
+
+~~~c#
+if (string.IsNullOrWhiteSpace(content))
+    return BadRequest("The Question Content can not be empty");
+
+_context.Questions.Add(new QuestionDB { Content = content });
+_context.SaveChanges();
+return Ok();
+~~~
+</details>
+
+<details><summary>Implement the Vote method</summary>
+
+~~~c#
+if (!_context.Questions.Any(q => q.ID == questionID))
+    return BadRequest("Invalid Question ID");
+
+_context.Votes.Add(new VoteDB { QuestionID = questionID });
+_context.SaveChanges();
+return Ok();
+~~~
+</details>
 
 ## Activate Swagger
 
 * Add the Swashbuckle.AspNetCore NuGet package to the QuestionsApp.Web project
-* Configure and activate Swagger
+
+### Configure and activate Swagger in Startup
+
+<details><summary>ConfigureServices</summary>
+
+~~~c#
+// Configuration for the Swagger Generator
+services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("QuestionsApi", new Info { Title = "Questions API" });
+});
+~~~
+</details>
+
+<details><summary>Configure</summary>
+
+~~~c#
+// Activate swagger
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/QuestionsApi/swagger.json", "Questions API V1");
+});
+~~~
+</details>
