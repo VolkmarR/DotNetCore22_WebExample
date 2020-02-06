@@ -1,6 +1,6 @@
-# DotNetCoreWebExample
+# DotNetCore22_WebExample
 
-This is an example project that shows step by step, how to build a simple web application with asp.net core. 
+This is an example project that shows step by step, how to build a simple web application with asp.net core 2.2. 
 
 ## Result
 
